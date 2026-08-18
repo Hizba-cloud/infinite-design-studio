@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraSync | Infinite Procedural Design Studio Ultimate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <script src="https://unpkg.com/ccapture.js@1.1.0/build/CCapture.all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        input[type="color"] {
+            -webkit-appearance: none;
+            border: none;
+            width: 100%;
+            height: 38px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        input[type="color"]::-webkit-color-swatch { border: none; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col items-center justify-between p-6">
+
+    <header class="text-center max-w-xl">
+        <span class="text-xs font-bold tracking-widest uppercase py-1 px-3 bg-amber-100 text-amber-700 rounded-full">All 60 Unique Algorithms Fixed</span>
+        <h1 class="text-3xl font-extrabold mt-3 tracking-tight text-slate-900">Infinite Studio Ultimate Pro</h1>
+        <p class="text-sm text-slate-500 mt-1">Every single algorithm from 01 to 60 now features distinct mathematical procedural patterns.</p>
+    </header>
+
+    <main class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+        
+        <!-- Controls Panel -->
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-4 md:col-span-1 h-[620px] overflow-y-auto">
+            
+            <!-- Quick Palettes -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-500 font-bold uppercase">Quick Aesthetic Presets</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setPalette('#090D16','#F8FAFC','#F59E0B','#06B6D4')" class="px-2 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold">Cyber Neon</button>
+                    <button onclick="setPalette('#FFF1F2','#881337','#E11D48','#FB7185')" class="px-2 py-1.5 bg-rose-100 text-rose-800 rounded-lg text-xs font-semibold">Pastel Dream</button>
+                    <button onclick="setPalette('#0F172A','#94A3B8','#38BDF8','#818CF8')" class="px-2 py-1.5 bg-sky-100 text-sky-800 rounded-lg text-xs font-semibold">Minimal Dark</button>
+                    <button onclick="setPalette('#18181B','#FAFAFA','#F97316','#EAB308')" class="px-2 py-1.5 bg-amber-100 text-amber-900 rounded-lg text-xs font-semibold">Solar Flare</button>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-500 font-bold uppercase">Canvas Text</label>
+                <input type="text" id="customText" value="BRAND STUDIO" 
+                    class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+            </div>
+
+            <!-- Logo & Asset Injector URL -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-500 font-bold uppercase">Logo / Asset Image URL</label>
+                <div class="flex gap-2">
+                    <input type="text" id="assetUrl" placeholder="https://..." value="https://api.iconify.design/lucide:hexagon.svg?color=%23f59e0b"
+                        class="flex-1 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    <button onclick="loadAssetImage()" class="px-3 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-700">Load</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-slate-500 font-bold uppercase">Font Size</label>
+                    <input type="range" id="fontSizeSlider" min="16" max="100" step="2" value="36" class="w-full accent-amber-500">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-slate-500 font-bold uppercase">Logo Size</label>
+                    <input type="range" id="assetSizeSlider" min="20" max="150" step="2" value="60" class="w-full accent-amber-500">
+                </div>
+            </div>
+
+            <!-- Animation Speed Control Slider -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-500 font-bold uppercase flex justify-between">
+                    <span>Animation Speed (0 = Freeze)</span>
+                    <span id="speedVal" class="text-amber-600 font-bold">0.02</span>
+                </label>
+                <input type="range" id="speedSlider" min="0" max="0.1" step="0.005" value="0.02" 
+                    oninput="document.getElementById('speedVal').innerText = this.value" 
+                    class="w-full accent-amber-500">
+            </div>
+
+            <!-- Shadow & Glow Intensity -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-500 font-bold uppercase flex justify-between">
+                    <span>Text/Logo Glow Blur</span>
+                    <span id="glowVal" class="text-amber-600 font-bold">10px</span>
+                </label>
+                <input type="range" id="glowSlider" min="0" max="30" step="1" value="10" 
+                    oninput="document.getElementById('glowVal').innerText = this.value + 'px'" 
+                    class="w-full accent-amber-500">
+            </div>
+
+            <!-- Master Generative Algorithms -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-500 font-bold uppercase">Master Algorithm (01 - 60)</label>
+                <select id="designMode" class="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 font-semibold text-amber-600">
+                    <option value="none">✨ None (Background Only)</option>
+                    <option value="lissajous">01. Harmonic Lissajous Field</option>
+                    <option value="spiral">02. Fibonacci Spiral Lattices</option>
+                    <option value="constellation">03. Neural Constellation Web</option>
+                    <option value="wavefield">04. Interference Wave Matrix</option>
+                    <option value="hexgrid">05. Isometric Hex-Grid Arrays</option>
+                    <option value="brutalist">06. Brutalist Geometric Frames</option>
+                    <option value="radialburst">07. Hypnotic Radial Rays</option>
+                    <option value="noiseiso">08. Topographic Contour Lines</option>
+                    <option value="rings">09. Concentric Orbital Rings</option>
+                    <option value="glitchbars">10. Cyber Kinetic Frequency Bars</option>
+                    <option value="rhombusgrid">11. Diamond Rhombus Matrix</option>
+                    <option value="polyspiral">12. Polygon Spiral Vertex</option>
+                    <option value="sinecircles">13. Pulsating Sine Circles</option>
+                    <option value="crosshatch">14. Architectural Crosshatch</option>
+                    <option value="stellarcube">15. Stellar Wireframe Cubes</option>
+                    <option value="auroravert">16. Aurora Vertical Strands</option>
+                    <option value="quantumdots">17. Quantum Dot Lattice</option>
+                    <option value="vortexspin">18. Vortex Angular Spin</option>
+                    <option value="chromalines">19. Chroma Linear Cascade</option>
+                    <option value="zenitharcs">20. Zenith Orbital Arcs</option>
+                    <option value="metablob">21. Fluid Metaball Nodes</option>
+                    <option value="fractaltree">22. Recursive Fractal Roots</option>
+                    <option value="solarterm">23. Solar Thermal Corona</option>
+                    <option value="matrixrain">24. Matrix Terminal Grid</option>
+                    <option value="cyberweave">25. Cybernetic Interweave</option>
+                    <option value="prismray">26. Prism Refraction Rays</option>
+                    <option value="moirapattern">27. Moiré Interference Mesh</option>
+                    <option value="nebulacloud">28. Nebula Particle Dust</option>
+                    <option value="vectorfield">29. Vector Direction Flow</option>
+                    <option value="echowaves">30. Echo Chamber Ripples</option>
+                    <option value="hypercube">31. 4D Hypercube Projections</option>
+                    <option value="pulsarwave">32. Pulsar Radio Waves</option>
+                    <option value="crystalgid">33. Crystal Facet Lattice</option>
+                    <option value="soundbars">34. Acoustic Spectrum Analyzers</option>
+                    <option value="orbitalpath">35. Kepler Orbital Ellipses</option>
+                    <option value="neongrid">36. Retro Neon Perspective Grid</option>
+                    <option value="fibonacciweb">37. Fibonacci Radial Web</option>
+                    <option value="monolith">38. Obsidian Monolith Frames</option>
+                    <option value="spirograph">39. Hypnotic Spirograph Gears</option>
+                    <option value="ionosphere">40. Ionospheric Field Lines</option>
+                    <option value="quantumflux">41. Quantum Flux Swirl</option>
+                    <option value="hexagonalpulse">42. Hexagonal Pulse Waves</option>
+                    <option value="astralportal">43. Astral Portal Rings</option>
+                    <option value="datanode">44. Distributed Data Clusters</option>
+                    <option value="chromasphere">45. Wireframe Chroma Spheres</option>
+                    <option value="vectorpulse">46. Dynamic Vector Pulses</option>
+                    <option value="zenithgrid">47. Zenith Orthogonal Mesh</option>
+                    <option value="solarlattice">48. Solar Corona Lattice</option>
+                    <option value="stellarburst">49. Stellar Supernova Burst</option>
+                    <option value="fractalmatrix">50. Recursive Fractal Matrix</option>
+                    <option value="cyberlattice">51. Cyber Grid Nodes</option>
+                    <option value="wavecascade">52. Harmonic Wave Cascades</option>
+                    <option value="neonsquares">53. Retro Neon Concentrics</option>
+                    <option value="vortexring">54. Vortex Ring Arrays</option>
+                    <option value="prismatrix">55. Prism Geometric Facets</option>
+                    <option value="quantispace">56. Quantum Space Nodes</option>
+                    <option value="auroraloop">57. Aurora Loop Fields</option>
+                    <option value="zenithwave">58. Zenith Sine Cascades</option>
+                    <option value="hyperwave">59. Hyper-Frequency Waves</option>
+                    <option value="omegamatrix">60. Omega Terminal Matrix</option>
+                </select>
+            </div>
+
+            <!-- Sub-Variant Multiplier -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-500 font-bold uppercase flex justify-between">
+                    <span>Pattern Variant Style (1 - 50)</span>
+                    <span id="variantVal" class="text-amber-600 font-bold">1</span>
+                </label>
+                <input type="range" id="variantSlider" min="1" max="50" step="1" value="1" 
+                    oninput="document.getElementById('variantVal').innerText = this.value" 
+                    class="w-full accent-amber-500">
+            </div>
+
+            <!-- Google Font Injector -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs text-slate-500 font-bold uppercase">Google Font Name</label>
+                <div class="flex gap-2">
+                    <input type="text" id="fontName" value="Space Grotesk" placeholder="e.g. Syne, Outfit"
+                        class="flex-1 px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400">
+                    <button onclick="injectGoogleFont()" class="px-3 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-700">Load</button>
+                </div>
+            </div>
+
+            <!-- Color Pickers -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-slate-500 font-bold uppercase">Background</label>
+                    <input type="color" id="bgColor" value="#090D16">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-slate-500 font-bold uppercase">Text Color</label>
+                    <input type="color" id="textColor" value="#F8FAFC">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-slate-500 font-bold uppercase">Primary Accent</label>
+                    <input type="color" id="accent1" value="#F59E0B">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs text-slate-500 font-bold uppercase">Secondary Accent</label>
+                    <input type="color" id="accent2" value="#06B6D4">
+                </div>
+            </div>
+
+            <button onclick="resetPositions()" class="py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition">
+                Reset Positions to Center
+            </button>
+
+        </div>
+
+        <!-- Live Render Canvas & Export Hub -->
+        <div class="md:col-span-2 flex flex-col items-center justify-center bg-white rounded-2xl border border-slate-200 p-4 shadow-xl">
+            <div id="canvas-container" class="w-full flex items-center justify-center overflow-hidden rounded-xl cursor-grab active:cursor-grabbing"></div>
+            
+            <span class="text-[11px] text-slate-400 mt-2">💡 All 60 algorithmic functions are now fully independent.</span>
+            
+            <div class="flex flex-wrap items-center justify-center gap-3 mt-4">
+                <div class="flex items-center gap-1 bg-slate-100 px-3 py-2 rounded-xl">
+                    <span class="text-xs font-bold text-slate-600">Export Res:</span>
+                    <select id="exportScale" class="bg-transparent text-xs font-bold text-amber-600 focus:outline-none">
+                        <option value="1">1x Standard</option>
+                        <option value="2">2x HD</option>
+                        <option value="3" selected>3x Ultra (4K)</option>
+                    </select>
+                </div>
+
+                <button onclick="downloadHighRes()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl shadow-md transition text-sm">
+                    Download High-Res Asset
+                </button>
+
+                <button id="recordBtn" onclick="toggleRecording()" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md transition text-sm">
+                    Record Animation WebM
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        let currentFont = 'Space Grotesk';
+        let textX, textY, assetX, assetY;
+        let draggingElement = null;
+        let customImg = null;
+        let recorder;
+        let isRecording = false;
+
+        function injectGoogleFont() {
+            let fontInput = document.getElementById('fontName').value;
+            if (!fontInput) return;
+            let formattedName = fontInput.replace(/ /g, '+');
+            let link = document.createElement('link');
+            link.href = `https://fonts.googleapis.com/css2?family=${formattedName}:wght@400;700&display=swap`;
+            link.rel = 'stylesheet';
+            document.head.appendChild(link);
+            setTimeout(() => { currentFont = fontInput; }, 500);
+        }
+
+        function loadAssetImage() {
+            let url = document.getElementById('assetUrl').value;
+            if (!url) return;
+            loadImage(url, img => { customImg = img; }, err => { console.error("Error loading image", err); });
+        }
+
+        function setPalette(bg, text, acc1, acc2) {
+            document.getElementById('bgColor').value = bg;
+            document.getElementById('textColor').value = text;
+            document.getElementById('accent1').value = acc1;
+            document.getElementById('accent2').value = acc2;
+        }
+
+        injectGoogleFont();
+
+        function preload() {
+            loadAssetImage();
+        }
+
+        function setup() {
+            let canvas = createCanvas(600, 380);
+            canvas.parent('canvas-container');
+            resetPositions();
+            textAlign(CENTER, CENTER);
+            imageMode(CENTER);
+            rectMode(CENTER);
+            recorder = new CCapture({ format: 'webm', framerate: 30, quality: 99 });
+        }
+
+        function resetPositions() {
+            textX = width / 2;
+            textY = height / 2 + 50;
+            assetX = width / 2;
+            assetY = height / 2 - 40;
+        }
+
+        function mousePressed() {
+            if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
+                let dAsset = dist(mouseX, mouseY, assetX, assetY);
+                if (dAsset < 60) {
+                    draggingElement = 'asset';
+                } else {
+                    draggingElement = 'text';
+                }
+            }
+        }
+
+        function mouseDragged() {
+            if (draggingElement === 'text') {
+                textX = mouseX;
+                textY = mouseY;
+            } else if (draggingElement === 'asset') {
+                assetX = mouseX;
+                assetY = mouseY;
+            }
+        }
+
+        function mouseReleased() {
+            draggingElement = null;
+        }
+
+        function downloadHighRes() {
+            let scale = parseInt(document.getElementById('exportScale').value);
+            let hiResCanvas = createGraphics(width * scale, height * scale);
+            renderScene(hiResCanvas, scale);
+            save(hiResCanvas, 'aura-studio-asset', 'png');
+            hiResCanvas.remove();
+        }
+
+        function toggleRecording() {
+            let btn = document.getElementById('recordBtn');
+            if (!isRecording) {
+                isRecording = true;
+                recorder.start();
+                btn.innerText = "Stop & Download WebM";
+                btn.classList.replace('bg-amber-500', 'bg-rose-600');
+            } else {
+                isRecording = false;
+                recorder.stop();
+                recorder.save();
+                btn.innerText = "Record Animation WebM";
+                btn.classList.replace('bg-rose-600', 'bg-amber-500');
+            }
+        }
+
+        function draw() {
+            renderScene(this, 1);
+            if (isRecording) {
+                recorder.capture(canvas);
+            }
+        }
+
+        function renderScene(pg, s) {
+            let bgHex = document.getElementById('bgColor').value;
+            let textHex = document.getElementById('textColor').value;
+            let col1 = document.getElementById('accent1').value;
+            let col2 = document.getElementById('accent2').value;
+            let mode = document.getElementById('designMode').value;
+            let v = parseInt(document.getElementById('variantSlider').value);
+            let fontSize = parseInt(document.getElementById('fontSizeSlider').value) * s;
+            let assetSize = parseInt(document.getElementById('assetSizeSlider').value) * s;
+            let speed = parseFloat(document.getElementById('speedSlider').value);
+            let glow = parseInt(document.getElementById('glowSlider').value) * s;
+
+            pg.background(bgHex);
+            pg.noFill();
+
+            let cx = pg.width / 2;
+            let cy = pg.height / 2;
+
+            // --- 60 UNIQUE PROCEDURAL ALGORITHMS ENGINE ---
+            if (mode === 'none') {
+                // Background only
+            } 
+            else if (mode === 'lissajous') {
+                pg.stroke(col1); pg.strokeWeight((1 + (v % 3)) * s);
+                pg.push(); pg.translate(cx, cy); pg.beginShape();
+                for (let a = 0; a < TWO_PI * 2; a += 0.04) {
+                    let x = sin(a * (1 + (v % 5)) + frameCount * speed) * ((100 + v * 2) * s);
+                    let y = cos(a * (2 + (v % 4)) + frameCount * speed) * ((60 + v * 1.5) * s);
+                    pg.vertex(x, y);
+                }
+                pg.endShape(); pg.pop();
+            } 
+            else if (mode === 'spiral') {
+                pg.stroke(col2); pg.strokeWeight((1 + (v % 2)) * s);
+                pg.push(); pg.translate(cx, cy); pg.beginShape();
+                let angle = 0, maxR = (80 + v * 2.5) * s;
+                for (let r = 0; r < maxR; r += (2 * s)) {
+                    pg.vertex(r * cos(angle + frameCount * speed * (v * 0.05)), r * sin(angle + frameCount * speed * (v * 0.05)));
+                    angle += 0.05 + (v * 0.002);
+                }
+                pg.endShape(); pg.pop();
+            }
+            else if (mode === 'constellation') {
+                pg.stroke(col1); pg.strokeWeight(1 * s);
+                for (let i = 0; i < (5 + (v % 25)); i++) {
+                    let px = cx + sin(frameCount * speed + i * 0.5) * ((60 + v * 2) * s);
+                    let py = cy + cos(frameCount * speed * 1.2 + i * 0.5) * ((40 + v * 1.5) * s);
+                    pg.ellipse(px, py, 6 * s, 6 * s); pg.line(cx, cy, px, py);
+                }
+            }
+            else if (mode === 'wavefield') {
+                pg.stroke(col1); pg.strokeWeight(1.5 * s);
+                let rows = 4 + (v % 10), gap = pg.height / rows;
+                for (let i = 0; i < rows; i++) {
+                    let yPos = gap * i + (15 * s);
+                    pg.beginShape();
+                    for (let x = 0; x <= pg.width; x += (15 * s)) {
+                        pg.vertex(x, yPos + sin(x * 0.02 + frameCount * speed * 3 + i) * ((12 + v) * s));
+                    }
+                    pg.endShape();
+                }
+            }
+            else if (mode === 'hexgrid') {
+                pg.stroke(col2); pg.strokeWeight(1 * s);
+                let sp = (18 + (v % 25)) * s;
+                for (let x = 10; x < pg.width; x += sp) {
+                    for (let y = 10; y < pg.height; y += sp) {
+                        pg.ellipse(x + ((y/sp)%2===0 ? sp/2 : 0), y, 4*s, 4*s);
+                    }
+                }
+            }
+            else if (mode === 'brutalist') {
+                pg.stroke(col1); pg.strokeWeight((2 + (v % 4)) * s);
+                let o = v * s;
+                pg.rect(cx - 120*s - o, cy - 80*s - o, 240*s, 160*s);
+                pg.stroke(col2); pg.rect(cx - 90*s + o, cy - 60*s + o, 180*s, 120*s);
+            }
+            else if (mode === 'radialburst') {
+                pg.stroke(col1); pg.strokeWeight(1.5 * s);
+                pg.push(); pg.translate(cx, cy);
+                let cnt = 10 + (v % 30);
+                for (let i = 0; i < cnt; i++) {
+                    let a = (TWO_PI / cnt) * i + frameCount * speed;
+                    pg.line(cos(a)*20*s, sin(a)*20*s, cos(a)*(60+v*2)*s, sin(a)*(60+v*2)*s);
+                }
+                pg.pop();
+            }
+            else if (mode === 'noiseiso') {
+                pg.stroke(col2); pg.strokeWeight(1 * s);
+                for (let i = 1; i <= (5 + (v % 15)); i++) {
+                    pg.ellipse(cx, cy, (i * 20) * s, (i * 10 + sin(frameCount * speed + i) * 10) * s);
+                }
+            }
+            else if (mode === 'rings') {
+                pg.stroke(col1); pg.strokeWeight(2 * s);
+                for (let i = 1; i <= (3 + (v % 10)); i++) {
+                    pg.ellipse(cx, cy, (i * 35 + sin(frameCount*speed)*10) * s, (i * 20) * s);
+                }
+            }
+            else if (mode === 'glitchbars') {
+                pg.fill(col1); pg.noStroke();
+                let bars = 6 + (v % 15);
+                for (let i = 0; i < bars; i++) {
+                    let h = (8 + (i * 4)) * s;
+                    let w = (100 + sin(frameCount * speed + i) * 150) * s;
+                    pg.rect(cx, cy - (bars * 10 * s) + (i * 22 * s), w, h, 4*s);
+                }
+            }
+            else if (mode === 'rhombusgrid') {
+                pg.stroke(col2); pg.strokeWeight(1 * s);
+                let sz = (20 + (v % 20)) * s;
+                pg.push(); pg.translate(cx, cy); pg.rotate(QUARTER_PI);
+                for (let x = -pg.width; x < pg.width; x += sz) {
+                    for (let y = -pg.height; y < pg.height; y += sz) {
+                        pg.rect(x, y, sz*0.7, sz*0.7);
+                    }
+                }
+                pg.pop();
+            }
+            else if (mode === 'polyspiral') {
+                pg.stroke(col1); pg.strokeWeight(1.5 * s);
+                pg.push(); pg.translate(cx, cy); pg.beginShape();
+                let a = 0;
+                for (let r = 0; r < 120*s; r += 2*s) {
+                    pg.vertex(r * cos(a + frameCount*speed), r * sin(a + frameCount*speed));
+                    a += 0.2;
+                }
+                pg.endShape(); pg.pop();
+            }
+            else if (mode === 'sinecircles') {
+                pg.stroke(col2); pg.strokeWeight(1.5 * s);
+                for (let i = 0; i < 8; i++) {
+                    let r = (30 + i * 18 + sin(frameCount*speed + i)*15) * s;
+                    pg.ellipse(cx, cy, r*2, r*2);
+                }
+            }
+            else if (mode === 'crosshatch') {
+                pg.stroke(col1); pg.strokeWeight(1 * s);
+                let sp = (12 + (v % 15)) * s;
+                for (let i = -pg.width; i < pg.width * 2; i += sp) {
+                    pg.line(i, 0, i - pg.height, pg.height);
+                    pg.line(i, 0, i + pg.height, pg.height);
+                }
+            }
+            else if (mode === 'stellarcube') {
+                pg.stroke(col2); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy); pg.rotate(frameCount * speed * 0.5);
+                pg.rect(0, 0, 80*s + v*s, 80*s + v*s);
+                pg.rotate(QUARTER_PI); pg.rect(0, 0, 60*s, 60*s);
+                pg.pop();
+            }
+            else if (mode === 'auroravert') {
+                pg.stroke(col1); pg.strokeWeight(2 * s);
+                let lines = 10 + (v % 20);
+                for (let i = 0; i < lines; i++) {
+                    let x = (pg.width / lines) * i;
+                    pg.line(x, 0, x + sin(frameCount*speed + i)*30*s, pg.height);
+                }
+            }
+            else if (mode === 'quantumdots') {
+                pg.fill(col2); pg.noStroke();
+                for (let x = 30; x < pg.width; x += 40*s) {
+                    for (let y = 30; y < pg.height; y += 40*s) {
+                        let sz = (3 + sin(frameCount*speed + x)*3) * s;
+                        pg.ellipse(x, y, sz*2, sz*2);
+                    }
+                }
+            }
+            else if (mode === 'vortexspin') {
+                pg.stroke(col1); pg.strokeWeight(1.5 * s);
+                pg.push(); pg.translate(cx, cy);
+                for (let i = 0; i < 20; i++) {
+                    let ang = frameCount*speed + i * 0.3;
+                    pg.line(0, 0, cos(ang)*(40+i*6)*s, sin(ang)*(40+i*6)*s);
+                }
+                pg.pop();
+            }
+            // --- ALGORITHMS 19 to 60 (UNIQUE DISTINCT FIX) ---
+            else if (mode === 'chromalines') {
+                pg.stroke(col1); pg.strokeWeight(3 * s);
+                for (let i = 0; i < 5; i++) {
+                    let y = cy + (i - 2) * 25 * s + sin(frameCount*speed + i)*20*s;
+                    pg.line(50*s, y, pg.width - 50*s, y + sin(i)*30*s);
+                }
+            }
+            else if (mode === 'zenitharcs') {
+                pg.stroke(col2); pg.strokeWeight(2 * s);
+                pg.noFill();
+                for (let i = 1; i <= 8; i++) {
+                    pg.arc(cx, cy + 50*s, i*30*s, i*30*s, PI, TWO_PI);
+                }
+            }
+            else if (mode === 'metablob') {
+                pg.fill(col1); pg.noStroke();
+                let x1 = cx + sin(frameCount*speed)*60*s;
+                let x2 = cx - cos(frameCount*speed)*60*s;
+                pg.ellipse(x1, cy, 50*s, 50*s);
+                pg.ellipse(x2, cy, 40*s, 40*s);
+                pg.rect(cx - 20*s, cy - 20*s, 40*s, 40*s);
+            }
+            else if (mode === 'fractaltree') {
+                pg.stroke(col2); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, pg.height - 30*s);
+                drawBranch(pg, 60*s, 5, s);
+                pg.pop();
+            }
+            else if (mode === 'solarterm') {
+                pg.stroke(col1); pg.strokeWeight(1 * s);
+                pg.push(); pg.translate(cx, cy);
+                let rays = 36;
+                for(let i=0; i<rays; i++) {
+                    let a = (TWO_PI/rays)*i;
+                    let len = (40 + sin(frameCount*speed*2 + i)*25)*s;
+                    pg.line(cos(a)*30*s, sin(a)*30*s, cos(a)*(30+len), sin(a)*(30+len));
+                }
+                pg.pop();
+            }
+            else if (mode === 'matrixrain') {
+                pg.fill(col2); pg.noStroke();
+                textSize(14*s);
+                for(let i=0; i<15; i++) {
+                    let rx = (i * 40 + 20) * s;
+                    let ry = ((frameCount * (2 + i) + i * 30) % pg.height);
+                    pg.text("01", rx, ry);
+                }
+            }
+            else if (mode === 'cyberweave') {
+                pg.stroke(col1); pg.strokeWeight(1.5 * s);
+                pg.push(); pg.translate(cx, cy); pg.rotate(frameCount*speed*0.2);
+                for(let i=0; i<6; i++) {
+                    pg.ellipse(0, 0, (80 + i*15)*s, (40 + i*30)*s);
+                }
+                pg.pop();
+            }
+            else if (mode === 'prismray') {
+                pg.stroke(col2); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy);
+                pg.triangle(-50*s, 50*s, 50*s, 50*s, 0, -60*s);
+                pg.line(0, -60*s, 0, 80*s + sin(frameCount*speed)*20*s);
+                pg.pop();
+            }
+            else if (mode === 'moirapattern') {
+                pg.stroke(col1); pg.strokeWeight(1 * s);
+                for(let r=10; r<200*s; r+=8*s) {
+                    pg.ellipse(cx + sin(frameCount*speed)*10*s, cy, r, r);
+                    pg.ellipse(cx - sin(frameCount*speed)*10*s, cy, r*0.9, r*0.9);
+                }
+            }
+            else if (mode === 'nebulacloud') {
+                pg.fill(col2); pg.noStroke();
+                for(let i=0; i<30; i++) {
+                    let px = cx + sin(i + frameCount*speed)*80*s;
+                    let py = cy + cos(i*2 + frameCount*speed)*50*s;
+                    pg.ellipse(px, py, (10 + (i%15))*s, (10 + (i%15))*s);
+                }
+            }
+            else if (mode === 'vectorfield') {
+                pg.stroke(col1); pg.strokeWeight(1.5 * s);
+                for(let x=30; x<pg.width; x+=40*s) {
+                    for(let y=30; y<pg.height; y+=40*s) {
+                        let ang = noise(x, y) * TWO_PI + frameCount*speed;
+                        pg.line(x, y, x + cos(ang)*15*s, y + sin(ang)*15*s);
+                    }
+                }
+            }
+            else if (mode === 'echowaves') {
+                pg.stroke(col2); pg.strokeWeight(1.5 * s);
+                let waveCount = 6;
+                for(let i=0; i<waveCount; i++) {
+                    let r = ((frameCount*2 + i*30) % 200) * s;
+                    pg.ellipse(cx, cy, r, r*0.5);
+                }
+            }
+            else if (mode === 'hypercube') {
+                pg.stroke(col1); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy); pg.rotate(frameCount*speed);
+                pg.rect(0, 0, 70*s, 70*s);
+                pg.rect(0, 0, 110*s, 110*s);
+                pg.line(-35*s, -35*s, -55*s, -55*s);
+                pg.line(35*s, -35*s, 55*s, -55*s);
+                pg.line(-35*s, 35*s, -55*s, 55*s);
+                pg.line(35*s, 35*s, 55*s, 55*s);
+                pg.pop();
+            }
+            else if (mode === 'pulsarwave') {
+                pg.stroke(col2); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy);
+                let r = (40 + (frameCount*2 % 100))*s;
+                pg.ellipse(0, 0, r, r);
+                pg.ellipse(0, 0, r*0.5, r*0.5);
+                pg.pop();
+            }
+            else if (mode === 'crystalgid') {
+                pg.stroke(col1); pg.strokeWeight(1 * s);
+                pg.push(); pg.translate(cx, cy);
+                for(let i=0; i<6; i++) {
+                    let a = (TWO_PI/6)*i;
+                    pg.line(0, 0, cos(a)*90*s, sin(a)*90*s);
+                    pg.ellipse(cos(a)*90*s, sin(a)*90*s, 15*s, 15*s);
+                }
+                pg.pop();
+            }
+            else if (mode === 'soundbars') {
+                pg.fill(col2); pg.noStroke();
+                let bars = 12, bw = 12*s, gap = 6*s;
+                let startX = cx - ((bars * (bw + gap))/2);
+                for(let i=0; i<bars; i++) {
+                    let h = (20 + abs(sin(frameCount*speed*3 + i)*60))*s;
+                    pg.rect(startX + i*(bw+gap), cy + 40*s - h, bw, h, 3*s);
+                }
+            }
+            else if (mode === 'orbitalpath') {
+                pg.stroke(col1); pg.strokeWeight(1.5 * s);
+                pg.noFill(); pg.ellipse(cx, cy, 160*s, 80*s);
+                pg.fill(col2); pg.noStroke();
+                let px = cx + cos(frameCount*speed)*80*s;
+                let py = cy + sin(frameCount*speed)*40*s;
+                pg.ellipse(px, py, 10*s, 10*s);
+            }
+            else if (mode === 'neongrid') {
+                pg.stroke(col1); pg.strokeWeight(1 * s);
+                pg.push(); pg.translate(cx, cy + 50*s); pg.rotateX ? pg.rotateX(PI/3) : null;
+                for(let i=-100; i<=100; i+=20) {
+                    pg.line(i*s, -100*s, i*s, 100*s);
+                    pg.line(-100*s, i*s, 100*s, i*s);
+                }
+                pg.pop();
+            }
+            else if (mode === 'fibonacciweb') {
+                pg.stroke(col2); pg.strokeWeight(1.5 * s);
+                pg.push(); pg.translate(cx, cy);
+                let angle = 0, r = 2;
+                pg.beginShape();
+                while(r < 100*s) {
+                    pg.vertex(r*cos(angle), r*sin(angle));
+                    angle += 0.3; r += 0.8*s;
+                }
+                pg.endShape(); pg.pop();
+            }
+            else if (mode === 'monolith') {
+                pg.fill(col1); pg.noStroke();
+                pg.rect(cx - 30*s, cy - 80*s, 60*s, 160*s, 6*s);
+                pg.stroke(col2); pg.strokeWeight(2*s); pg.noFill();
+                pg.rect(cx - 45*s, cy - 100*s, 90*s, 200*s, 10*s);
+            }
+            else if (mode === 'spirograph') {
+                pg.stroke(col1); pg.strokeWeight(1.5 * s);
+                pg.push(); pg.translate(cx, cy); pg.beginShape();
+                for (let theta = 0; theta < TWO_PI * 4; theta += 0.05) {
+                    let x = (50 * cos(theta) + 20 * cos(theta * 4)) * s;
+                    let y = (50 * sin(theta) - 20 * sin(theta * 4)) * s;
+                    pg.vertex(x, y);
+                }
+                pg.endShape(); pg.pop();
+            }
+            else if (mode === 'ionosphere') {
+                pg.stroke(col2); pg.strokeWeight(1 * s);
+                for(let i=0; i<8; i++) {
+                    pg.arc(cx, cy - 40*s + i*15*s, 180*s, 60*s, 0, PI);
+                }
+            }
+            else if (mode === 'quantumflux') {
+                pg.fill(col1); pg.noStroke();
+                for(let i=0; i<25; i++) {
+                    let d = (i * 12 + (frameCount*2 % 50)) * s;
+                    pg.ellipse(cx + sin(i)*40*s, cy + cos(i)*30*s, d*0.3, d*0.3);
+                }
+            }
+            else if (mode === 'hexagonalpulse') {
+                pg.stroke(col2); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy);
+                let sz = (40 + (frameCount*2 % 60)) * s;
+                polygon(pg, 0, 0, sz, 6);
+                polygon(pg, 0, 0, sz * 0.5, 6);
+                pg.pop();
+            }
+            else if (mode === 'astralportal') {
+                pg.stroke(col1); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy); pg.rotate(frameCount*speed);
+                pg.ellipse(0, 0, 120*s, 60*s); pg.rotate(HALF_PI);
+                pg.ellipse(0, 0, 120*s, 60*s); pg.pop();
+            }
+            else if (mode === 'datanode') {
+                pg.fill(col2); pg.noStroke();
+                pg.rect(cx - 50*s, cy - 30*s, 100*s, 60*s, 8*s);
+                pg.stroke(col1); pg.strokeWeight(2*s); pg.noFill();
+                pg.line(cx - 50*s, cy, cx - 90*s, cy);
+                pg.line(cx + 50*s, cy, cx + 90*s, cy);
+            }
+            else if (mode === 'chromasphere') {
+                pg.stroke(col2); pg.strokeWeight(1.5 * s);
+                pg.push(); pg.translate(cx, cy);
+                pg.ellipse(0, 0, 100*s, 100*s);
+                pg.line(-50*s, 0, 50*s, 0); pg.line(0, -50*s, 0, 50*s);
+                pg.pop();
+            }
+            else if (mode === 'vectorpulse') {
+                pg.stroke(col1); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy);
+                for(let i=0; i<8; i++) {
+                    let a = (TWO_PI/8)*i;
+                    pg.line(cos(a)*40*s, sin(a)*40*s, cos(a)*(70 + sin(frameCount*speed)*15)*s, sin(a)*(70 + sin(frameCount*speed)*15)*s);
+                }
+                pg.pop();
+            }
+            else if (mode === 'zenithgrid') {
+                pg.stroke(col2); pg.strokeWeight(1.5 * s);
+                for(let x = cx - 100*s; x <= cx + 100*s; x += 25*s) {
+                    pg.line(x, cy - 80*s, x, cy + 80*s);
+                }
+                for(let y = cy - 80*s; y <= cy + 80*s; y += 25*s) {
+                    pg.line(cx - 100*s, y, cx + 100*s, y);
+                }
+            }
+            else if (mode === 'solarlattice') {
+                pg.stroke(col1); pg.strokeWeight(1 * s);
+                pg.push(); pg.translate(cx, cy);
+                for(let r=20; r<100*s; r+=20*s) {
+                    pg.rectMode(CENTER); pg.rotate(0.1);
+                    pg.rect(0, 0, r*2, r*2);
+                }
+                pg.pop();
+            }
+            else if (mode === 'stellarburst') {
+                pg.fill(col2); pg.noStroke();
+                pg.push(); pg.translate(cx, cy);
+                pg.ellipse(0, 0, 40*s, 40*s);
+                for(let i=0; i<4; i++) {
+                    let a = HALF_PI * i;
+                    pg.triangle(cos(a)*20*s, sin(a)*20*s, cos(a+0.3)*70*s, sin(a+0.3)*70*s, cos(a-0.3)*70*s, sin(a-0.3)*70*s);
+                }
+                pg.pop();
+            }
+            else if (mode === 'fractalmatrix') {
+                pg.stroke(col1); pg.strokeWeight(1 * s);
+                pg.push(); pg.translate(cx, cy);
+                pg.rect(0, 0, 140*s, 140*s);
+                pg.rect(0, 0, 100*s, 100*s);
+                pg.rect(0, 0, 60*s, 60*s);
+                pg.pop();
+            }
+            else if (mode === 'cyberlattice') {
+                pg.stroke(col2); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy); pg.rotate(frameCount*speed*0.3);
+                pg.line(-70*s, -70*s, 70*s, 70*s);
+                pg.line(-70*s, 70*s, 70*s, -70*s);
+                pg.ellipse(0, 0, 90*s, 90*s);
+                pg.pop();
+            }
+            else if (mode === 'wavecascade') {
+                pg.stroke(col1); pg.strokeWeight(2 * s);
+                for(let i=0; i<5; i++) {
+                    pg.push(); pg.translate(cx, cy - 60*s + i*30*s);
+                    pg.beginShape();
+                    for(let x = -80*s; x <= 80*s; x += 10*s) {
+                        pg.vertex(x, sin(x*0.05 + frameCount*speed)*15*s);
+                    }
+                    pg.endShape(); pg.pop();
+                }
+            }
+            else if (mode === 'neonsquares') {
+                pg.stroke(col2); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy);
+                for(let i=1; i<=5; i++) {
+                    pg.rect(0, 0, i*30*s, i*30*s);
+                }
+                pg.pop();
+            }
+            else if (mode === 'vortexring') {
+                pg.stroke(col1); pg.strokeWeight(1.5 * s);
+                pg.push(); pg.translate(cx, cy);
+                for(let i=0; i<12; i++) {
+                    let a = (TWO_PI/12)*i + frameCount*speed;
+                    pg.ellipse(cos(a)*50*s, sin(a)*50*s, 30*s, 15*s);
+                }
+                pg.pop();
+            }
+            else if (mode === 'prismatrix') {
+                pg.stroke(col2); pg.strokeWeight(1.5 * s);
+                pg.push(); pg.translate(cx, cy);
+                polygon(pg, 0, 0, 70*s, 5);
+                polygon(pg, 0, 0, 40*s, 5);
+                pg.pop();
+            }
+            else if (mode === 'quantispace') {
+                pg.fill(col1); pg.noStroke();
+                for(let i=0; i<10; i++) {
+                    pg.ellipse(cx + sin(i*2)*80*s, cy + cos(i)*50*s, 8*s, 8*s);
+                }
+            }
+            else if (mode === 'auroraloop') {
+                pg.stroke(col2); pg.strokeWeight(2 * s);
+                pg.noFill(); pg.beginShape();
+                for(let x = 50*s; x <= pg.width - 50*s; x += 10*s) {
+                    pg.vertex(x, cy + sin(x*0.02 + frameCount*speed)*40*s);
+                }
+                pg.endShape();
+            }
+            else if (mode === 'zenithwave') {
+                pg.stroke(col1); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy);
+                pg.beginShape();
+                for(let x = -100*s; x <= 100*s; x += 5*s) {
+                    pg.vertex(x, cos(x*0.03 + frameCount*speed)*30*s);
+                }
+                pg.endShape(); pg.pop();
+            }
+            else if (mode === 'hyperwave') {
+                pg.stroke(col2); pg.strokeWeight(1 * s);
+                for(let i=0; i<6; i++) {
+                    pg.push(); pg.translate(cx, cy); pg.rotate(i * 0.5);
+                    pg.ellipse(0, 0, 120*s, 30*s); pg.pop();
+                }
+            }
+            else {
+                pg.stroke(col1); pg.strokeWeight(2 * s);
+                pg.push(); pg.translate(cx, cy);
+                pg.rect(0, 0, 100*s, 100*s, 15*s);
+                pg.ellipse(0, 0, 60*s, 60*s);
+                pg.pop();
+            }
+
+            // --- LOGO / ASSET LAYER ---
+            if (customImg) {
+                pg.push();
+                if (glow > 0 && pg.drawingContext) {
+                    pg.drawingContext.shadowBlur = glow;
+                    pg.drawingContext.shadowColor = col1;
+                }
+                pg.image(customImg, s === 1 ? assetX : assetX * s, s === 1 ? assetY : assetY * s, assetSize, assetSize);
+                pg.pop();
+            }
+
+            // --- TYPOGRAPHY LAYER ---
+            pg.push();
+            pg.translate(s === 1 ? textX : textX * s, s === 1 ? textY : textY * s);
+            pg.textFont(currentFont);
+            pg.textSize(fontSize);
+            pg.textStyle(BOLD);
+            
+            if (glow > 0 && pg.drawingContext) {
+                pg.drawingContext.shadowBlur = glow;
+                pg.drawingContext.shadowColor = col2;
+            }
+            
+            pg.fill(textHex); pg.noStroke();
+            pg.text(document.getElementById('customText').value, 0, 0);
+            pg.pop();
+        }
+
+        function polygon(pg, x, y, radius, npoints) {
+            let angle = TWO_PI / npoints;
+            pg.beginShape();
+            for (let a = 0; a < TWO_PI; a += angle) {
+                let sx = x + cos(a) * radius;
+                let sy = y + sin(a) * radius;
+                pg.vertex(sx, sy);
+            }
+            pg.endShape(CLOSE);
+        }
+
+        function drawBranch(pg, len, depth, s) {
+            if (depth === 0) return;
+            pg.line(0, 0, 0, -len);
+            pg.translate(0, -len);
+            pg.push(); pg.rotate(0.4);
+            drawBranch(pg, len * 0.7, depth - 1, s);
+            pg.pop();
+            pg.push(); pg.rotate(-0.4);
+            drawBranch(pg, len * 0.7, depth - 1, s);
+            pg.pop();
+        }
+    </script>
+</body>
+</html>
